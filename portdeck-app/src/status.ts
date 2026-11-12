@@ -351,15 +351,16 @@ function resolveProcessGrouping(cwd: string, git: GitInfo | undefined): ProcessG
 }
 
 function inferCodexWorktreeGrouping(cwd: string): ProcessGrouping | undefined {
-  const resolved = path.resolve(cwd);
-  const marker = `${path.sep}.codex${path.sep}worktrees${path.sep}`;
+  const pathApi = /^[A-Za-z]:[\\/]/.test(cwd) || cwd.includes("\\") ? path.win32 : path.posix;
+  const resolved = pathApi.resolve(cwd);
+  const marker = `${pathApi.sep}.codex${pathApi.sep}worktrees${pathApi.sep}`;
   const markerIndex = resolved.indexOf(marker);
   if (markerIndex === -1) {
     return undefined;
   }
 
   const prefix = resolved.slice(0, markerIndex + marker.length);
-  const [worktreeSlug, projectName] = resolved.slice(markerIndex + marker.length).split(path.sep);
+  const [worktreeSlug, projectName] = resolved.slice(markerIndex + marker.length).split(pathApi.sep);
   if (!worktreeSlug || !projectName) {
     return undefined;
   }
@@ -367,7 +368,7 @@ function inferCodexWorktreeGrouping(cwd: string): ProcessGrouping | undefined {
   return {
     projectName,
     worktreeName: `codex/${worktreeSlug}`,
-    worktreePath: path.join(prefix, worktreeSlug, projectName)
+    worktreePath: pathApi.join(prefix, worktreeSlug, projectName)
   };
 }
 

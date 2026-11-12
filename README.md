@@ -69,6 +69,19 @@ portdeck-mac/scripts/run-dev-app.sh
 
 The launcher builds and opens `PortDeck.app`; PortDeck then appears in the menu bar. The source workflow resolves the JavaScript discovery helper from this checkout and provider CLIs from the user's login shell or standard Homebrew locations.
 
+### Windows local-development preview
+
+The repository also contains an initial native Windows taskbar flyout covering local process, port, Git, Docker, open, and confirmed-stop workflows. It anchors to the active taskbar edge, supports pinning, and provides persisted Dark, Light, and System themes with Dark as the default. It consumes the same status JSON contract as the macOS app; remote provider views are not yet included in the Windows preview.
+
+On Windows 10 or 11 with Node.js, npm, Git, and the .NET 10 SDK installed:
+
+```powershell
+npm ci
+npm run run:windows
+```
+
+See [`docs/windows-development.md`](docs/windows-development.md) for the discovery boundary, current limitations, and local verification checklist.
+
 ## Build the local arm64 release candidate
 
 After `npm ci`, build and verify the self-contained local-discovery candidate from the repository root:
@@ -86,6 +99,7 @@ This artifact is a local packaging candidate, not the public ZIP. It has no prod
 
 - [`portdeck-app`](portdeck-app/) owns local discovery, confirmed service-stop controls, and the [`portdeck status --json`](docs/status-json.md) contract.
 - [`portdeck-mac`](portdeck-mac/) is the Swift menu-bar app that renders and invokes those contracts.
+- [`portdeck-windows`](portdeck-windows/) is the native WPF tray-app preview for Windows local services.
 - [`docs/architecture.md`](docs/architecture.md) records the application and provider boundaries.
 - [`docs/distribution.md`](docs/distribution.md) defines the direct-download packaging contract.
 - [`docs/app-store-readiness.md`](docs/app-store-readiness.md) tracks the separate Mac App Store feasibility path.

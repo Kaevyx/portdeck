@@ -12,6 +12,7 @@ import {
 import { discoverNgrokExposures } from "./ngrok.js";
 import { probeHttpEndpoints } from "./probes.js";
 import { buildStatus, collectDockerHostPathCandidates } from "./status.js";
+import { discoverWindowsLocal } from "./windows-discovery.js";
 import type {
   DiscoveredDockerPort,
   DiscoveredProcessPort,
@@ -46,9 +47,16 @@ export async function getPortdeckStatus(): Promise<PortdeckStatus> {
 
 export async function discover(): Promise<DiscoveryResult> {
   const warnings: string[] = [];
-  const processPorts = await discoverProcessPorts(warnings);
-  const processes = await discoverProcesses(processPorts, warnings);
-  const processActivityByPid = await discoverProcessActivity(processPorts);
+  const local = process.platform === "win32"
+    ? await discoverWindowsLocal(warnings)
+    : {
+        processPorts: await discoverProcessPorts(warnings),
+        processes: undefined,
+        processActivityByPid: undefined
+      };
+  const processPorts = local.processPorts;
+  const processes = local.processes ?? await discoverProcesses(processPorts, warnings);
+  const processActivityByPid = local.processActivityByPid ?? await discoverProcessActivity(processPorts);
   const dockerPorts = await discoverDockerPorts(warnings);
   const dockerActivityByContainerId = await discoverDockerActivity(dockerPorts);
   const discoveryPaths = collectDiscoveryPaths(processes, dockerPorts);
@@ -242,7 +250,7 @@ async function readPackageContext(
     return undefined;
   }
 
-  const relativePath = path.relative(worktreePath, packagePath) || ".";
+  const relativePath = (path.relative(worktreePath, packagePath) || ".").split(path.sep).join("/");
   const name = readPackageName(manifest);
   return {
     type: "package",

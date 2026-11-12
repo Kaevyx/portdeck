@@ -1,0 +1,332 @@
+<Window x:Class="PortDeck.Windows.DashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PortDeck"
+        Width="570" Height="720"
+        MinWidth="500" MinHeight="520"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Foreground="{StaticResource PrimaryText}"
+        PreviewKeyDown="WindowKeyDown">
+  <Border Margin="14"
+          Background="{StaticResource WindowBackground}"
+          BorderBrush="{StaticResource HairlineBorder}"
+          BorderThickness="1"
+          CornerRadius="18">
+    <Border.Effect>
+      <DropShadowEffect Color="#000000" BlurRadius="26" ShadowDepth="7" Opacity="0.62" />
+    </Border.Effect>
+
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="3" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <!-- Header / drag surface -->
+      <Grid Margin="20,18,16,14" MouseLeftButtonDown="HeaderMouseLeftButtonDown">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Border Width="42" Height="42" CornerRadius="12" Background="{StaticResource BrandGradient}">
+          <Grid>
+            <TextBlock Text="P" FontFamily="Segoe UI Variable Display, Segoe UI" FontSize="22" FontWeight="Bold"
+                       Foreground="#0B0E14" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0" />
+            <Ellipse Width="6" Height="6" Fill="#58D6A8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4" />
+          </Grid>
+        </Border>
+
+        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+          <TextBlock Text="PortDeck" FontFamily="Segoe UI Variable Display, Segoe UI" FontSize="20" FontWeight="SemiBold" />
+          <TextBlock Text="LOCAL  /  WINDOWS" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource MutedText}"
+                     Margin="0,2,0,0" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button x:Name="PinButton" Style="{StaticResource IconButton}" Content="&#xE718;" Click="PinClick"
+                  ToolTip="Keep flyout open" AutomationProperties.Name="Keep flyout open" />
+          <Button Style="{StaticResource IconButton}" Content="&#xE713;" Click="SettingsClick"
+                  ToolTip="Settings" AutomationProperties.Name="Settings" />
+          <Button x:Name="RefreshButton" Style="{StaticResource IconButton}" Content="&#xE72C;" Click="RefreshClick"
+                  ToolTip="Refresh local services" AutomationProperties.Name="Refresh local services" />
+          <Button Style="{StaticResource IconButton}" Content="&#xE8BB;" Click="CloseClick"
+                  ToolTip="Hide PortDeck" AutomationProperties.Name="Hide PortDeck" />
+        </StackPanel>
+      </Grid>
+
+      <!-- Local summary -->
+      <Border Grid.Row="1" Margin="20,0,20,14" Padding="14,12"
+              Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+              BorderThickness="1" CornerRadius="12">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <Grid Width="28" Height="28">
+              <Ellipse Fill="{StaticResource MetadataBackground}" />
+              <Ellipse Width="8" Height="8" Fill="{StaticResource Healthy}" />
+            </Grid>
+            <StackPanel Margin="10,0,0,0">
+              <TextBlock x:Name="ServiceCountText" Text="Discovering services…" FontSize="13" FontWeight="SemiBold" />
+              <TextBlock x:Name="ProjectCountText" Text="Inspecting this Windows session" FontSize="11"
+                         Foreground="{StaticResource SecondaryText}" Margin="0,2,0,0" />
+            </StackPanel>
+          </StackPanel>
+          <Border Grid.Column="1" Background="{StaticResource MetadataBackground}" BorderBrush="{StaticResource HairlineBorder}"
+                  BorderThickness="1" CornerRadius="8" Padding="10,5" VerticalAlignment="Center">
+            <TextBlock Text="READ + CONTROL" Foreground="{StaticResource AccentBright}" FontSize="9"
+                       FontWeight="SemiBold" />
+          </Border>
+        </Grid>
+      </Border>
+
+      <!-- Warnings and action feedback -->
+      <Border Grid.Row="2" x:Name="MessageBorder" Background="#302718" BorderBrush="#594626"
+              BorderThickness="1" CornerRadius="9" Padding="11,9" Margin="20,0,20,12" Visibility="Collapsed">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <TextBlock x:Name="MessageGlyph" Text="!" Foreground="{StaticResource Warning}" FontSize="12"
+                     FontWeight="Bold" VerticalAlignment="Top" Margin="1,0,10,0" />
+          <TextBlock Grid.Column="1" x:Name="MessageText" TextWrapping="Wrap" Foreground="#F4CE88" FontSize="11" />
+        </Grid>
+      </Border>
+
+      <ProgressBar Grid.Row="3" x:Name="LoadingBar" IsIndeterminate="True" Height="3" BorderThickness="0"
+                   Foreground="{StaticResource Accent}" Background="Transparent" Visibility="Collapsed" />
+
+      <!-- Services -->
+      <Grid Grid.Row="4" Margin="20,12,14,0">
+        <Grid x:Name="EmptyState" Visibility="Collapsed">
+          <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="300">
+            <Border Width="58" Height="58" CornerRadius="18" Background="{StaticResource SurfaceBackground}"
+                    BorderBrush="{StaticResource HairlineBorder}" BorderThickness="1" HorizontalAlignment="Center">
+              <TextBlock Text="&#xE774;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="23"
+                         Foreground="{StaticResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <TextBlock Text="No local services yet" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,14,0,0" />
+            <TextBlock Text="Start a development server and it will appear here automatically."
+                       Foreground="{StaticResource SecondaryText}" FontSize="12" TextAlignment="Center"
+                       TextWrapping="Wrap" Margin="0,6,0,0" />
+          </StackPanel>
+        </Grid>
+
+        <ScrollViewer x:Name="ServiceScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      PanningMode="VerticalOnly" PanningDeceleration="0.001" Padding="0,0,6,10">
+          <ItemsControl x:Name="ServiceList">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Style="{StaticResource ServiceCard}">
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="4" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Background="{Binding StatusBrush}" CornerRadius="2" Margin="0,2,0,2" />
+
+                    <Grid Grid.Column="1" Margin="12,0,0,0">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding ProjectLabel}" Foreground="{StaticResource AccentBright}" FontSize="9"
+                                   FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                        <Border Grid.Column="1" Background="{StaticResource MetadataBackground}" CornerRadius="8" Padding="8,3">
+                          <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="6" Height="6" Fill="{Binding StatusBrush}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding StatusLabel}" Foreground="{Binding StatusBrush}" FontSize="9"
+                                       FontWeight="SemiBold" Margin="5,0,0,0" />
+                          </StackPanel>
+                        </Border>
+                      </Grid>
+
+                      <TextBlock Grid.Row="1" Text="{Binding Name}" FontFamily="Segoe UI Variable Display, Segoe UI"
+                                 FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Margin="0,7,0,0" />
+
+                      <StackPanel Grid.Row="2" Margin="0,7,0,0">
+                        <WrapPanel>
+                          <Border Background="{StaticResource MetadataBackground}" BorderBrush="{StaticResource HairlineBorder}" BorderThickness="1"
+                                  CornerRadius="6" Padding="7,3" Margin="0,0,6,0">
+                            <TextBlock Text="{Binding EndpointLabel}" FontFamily="Cascadia Mono, Consolas" FontSize="10"
+                                       Foreground="{StaticResource PrimaryText}" />
+                          </Border>
+                          <Border Background="{StaticResource MetadataBackground}" BorderBrush="{StaticResource HairlineBorder}" BorderThickness="1"
+                                  CornerRadius="6" Padding="7,3" Margin="0,0,6,0">
+                            <TextBlock Text="{Binding SourceLabel}" FontSize="10" Foreground="{StaticResource SecondaryText}" />
+                          </Border>
+                          <TextBlock Text="{Binding IdentityLabel}" FontSize="10" Foreground="{StaticResource MutedText}"
+                                     VerticalAlignment="Center" />
+                        </WrapPanel>
+                        <TextBlock Text="{Binding LocationLabel}" FontSize="10" Foreground="{StaticResource MutedText}"
+                                   TextTrimming="CharacterEllipsis" Margin="0,7,0,0" ToolTip="{Binding Folder}" />
+                      </StackPanel>
+
+                      <Grid Grid.Row="3" Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding ContextLabel}" FontSize="10" Foreground="{StaticResource SecondaryText}"
+                                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                          <Button Style="{StaticResource PrimaryButton}" Content="Open" IsEnabled="{Binding CanOpen}"
+                                  Tag="{Binding}" Click="OpenClick" ToolTip="Open local endpoint" />
+                          <Button Style="{StaticResource ActionButton}" Content="Folder" IsEnabled="{Binding CanOpenFolder}"
+                                  Tag="{Binding}" Click="FolderClick" ToolTip="Open project folder" />
+                          <Button Style="{StaticResource DangerButton}" Content="Stop" IsEnabled="{Binding CanStop}"
+                                  Tag="{Binding}" Click="StopClick" ToolTip="Stop this service" />
+                        </StackPanel>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Grid>
+
+      <!-- Footer -->
+      <Border Grid.Row="5" Margin="20,8,20,16" Padding="0,11,0,0" BorderBrush="{StaticResource HairlineBorder}"
+              BorderThickness="0,1,0,0">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Orientation="Horizontal">
+            <Ellipse x:Name="FooterStatusDot" Width="6" Height="6" Fill="{StaticResource Healthy}" VerticalAlignment="Center" />
+            <TextBlock x:Name="LastUpdatedText" Text="Waiting for first refresh" Foreground="{StaticResource SecondaryText}"
+                       FontSize="10" Margin="7,0,0,0" VerticalAlignment="Center" />
+          </StackPanel>
+          <TextBlock Grid.Column="1" Text="Local data only" Foreground="{StaticResource MutedText}" FontSize="10" />
+        </Grid>
+      </Border>
+
+      <!-- Embedded settings keeps the flyout attached to the taskbar. -->
+      <Border Grid.RowSpan="6" Panel.ZIndex="20" x:Name="SettingsPanel" Visibility="Collapsed"
+              Background="{StaticResource WindowBackground}" CornerRadius="18">
+        <Grid Margin="20,18,20,18">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button Style="{StaticResource IconButton}" Content="&#xE72B;" Margin="0" Click="CloseSettingsClick"
+                    ToolTip="Back to services" AutomationProperties.Name="Back to services" />
+            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+              <TextBlock Text="Settings" FontFamily="Segoe UI Variable Display, Segoe UI" FontSize="20" FontWeight="SemiBold" />
+              <TextBlock Text="WINDOWS FLYOUT" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource MutedText}" Margin="0,2,0,0" />
+            </StackPanel>
+            <Border Grid.Column="2" Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+                    BorderThickness="1" CornerRadius="8" Padding="9,5" VerticalAlignment="Center">
+              <TextBlock Text="SAVED LOCALLY" FontSize="9" Foreground="{StaticResource SecondaryText}" FontWeight="SemiBold" />
+            </Border>
+          </Grid>
+
+          <StackPanel Grid.Row="1" Margin="0,28,0,0">
+            <TextBlock Text="Appearance" FontSize="13" FontWeight="SemiBold" />
+            <TextBlock Text="Dark is the default. System follows the Windows app theme when PortDeck starts."
+                       Foreground="{StaticResource SecondaryText}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,12" />
+            <UniformGrid Columns="3">
+              <Button x:Name="DarkThemeButton" Style="{StaticResource ActionButton}" Margin="0,0,6,0" Height="68"
+                      Click="DarkThemeClick" Tag="Dark">
+                <StackPanel>
+                  <TextBlock Text="&#xE708;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17" HorizontalAlignment="Center" />
+                  <TextBlock Text="Dark" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                </StackPanel>
+              </Button>
+              <Button x:Name="LightThemeButton" Style="{StaticResource ActionButton}" Margin="3,0" Height="68"
+                      Click="LightThemeClick" Tag="Light">
+                <StackPanel>
+                  <TextBlock Text="&#xE706;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17" HorizontalAlignment="Center" />
+                  <TextBlock Text="Light" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                </StackPanel>
+              </Button>
+              <Button x:Name="SystemThemeButton" Style="{StaticResource ActionButton}" Margin="6,0,0,0" Height="68"
+                      Click="SystemThemeClick" Tag="System">
+                <StackPanel>
+                  <TextBlock Text="&#xE770;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="17" HorizontalAlignment="Center" />
+                  <TextBlock Text="System" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                </StackPanel>
+              </Button>
+            </UniformGrid>
+
+            <Border Height="1" Background="{StaticResource HairlineBorder}" Margin="0,26,0,22" />
+
+            <TextBlock Text="Flyout behavior" FontSize="13" FontWeight="SemiBold" />
+            <Border Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+                    BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,12,0,0">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Keep flyout open" FontSize="12" FontWeight="SemiBold" />
+                  <TextBlock Text="When off, PortDeck tucks back into the taskbar when it loses focus."
+                             Foreground="{StaticResource SecondaryText}" FontSize="10" TextWrapping="Wrap" Margin="0,4,18,0" />
+                </StackPanel>
+                <ToggleButton Grid.Column="1" x:Name="KeepOpenToggle" Style="{StaticResource ToggleSwitch}"
+                              VerticalAlignment="Center" Checked="KeepOpenToggleChanged" Unchecked="KeepOpenToggleChanged" />
+              </Grid>
+            </Border>
+
+            <Border Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+                    BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,10,0,0">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Taskbar attached" FontSize="12" FontWeight="SemiBold" />
+                  <TextBlock Text="The flyout follows the taskbar edge on the monitor where it is opened."
+                             Foreground="{StaticResource SecondaryText}" FontSize="10" TextWrapping="Wrap" Margin="0,4,18,0" />
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="ON" Foreground="{StaticResource Healthy}" FontSize="10"
+                           FontWeight="SemiBold" VerticalAlignment="Center" />
+              </Grid>
+            </Border>
+          </StackPanel>
+
+          <Border Grid.Row="2" Padding="0,12,0,0" BorderBrush="{StaticResource HairlineBorder}" BorderThickness="0,1,0,0">
+            <TextBlock Text="Preferences are stored in your local PortDeck application data."
+                       FontSize="10" Foreground="{StaticResource MutedText}" />
+          </Border>
+        </Grid>
+      </Border>
+    </Grid>
+  </Border>
+</Window>

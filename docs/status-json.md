@@ -1,6 +1,6 @@
 # PortDeck Status JSON
 
-`portdeck status --json` is the contract between discovery, the Mac app, and future automation.
+`portdeck status --json` is the contract between discovery, the macOS and Windows apps, and future automation.
 
 ## Current Contract
 
@@ -210,4 +210,4 @@ Git repository metadata:
 
 ## Ownership
 
-`portdeck-app` owns this contract. `portdeck-mac` consumes it and should keep its Swift models aligned with the documented shape.
+`portdeck-app` owns this contract. `portdeck-mac` and `portdeck-windows` consume it and should keep their platform models aligned with the documented shape.

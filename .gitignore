@@ -5,6 +5,9 @@ dist/
 coverage/
 .build/
 .swiftpm/
+.dotnet/
+portdeck-windows/bin/
+portdeck-windows/obj/
 .DS_Store
 *.log
 .env

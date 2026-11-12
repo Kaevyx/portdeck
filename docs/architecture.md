@@ -1,14 +1,15 @@
 # PortDeck Architecture
 
-This PortDeck repository contains two runtime surfaces that share one local application model. The static marketing site lives independently in [`portdeck-site`](https://github.com/JessePeplinski/portdeck-site).
+This PortDeck repository contains a shared CLI/helper and native macOS and Windows surfaces that consume one local application model. The static marketing site lives independently in [`portdeck-site`](https://github.com/JessePeplinski/portdeck-site).
 
 ## Repo Boundaries
 
 - `portdeck-app` is the CLI and discovery engine. It owns process, port, Git worktree, and Docker discovery, and exposes that model through `portdeck status --json`.
 - `portdeck-mac` is the native macOS menu bar app. It consumes stable status JSON and renders it. It must not reimplement `lsof`, Git, Docker, or process discovery.
+- `portdeck-windows` is the native Windows tray app. It consumes the same status JSON and keeps Windows machine inspection in `portdeck-app` rather than reimplementing discovery in WPF.
 - `docs` records product architecture, distribution decisions, and the status JSON contract.
 
-The CLI/helper and Mac app remain one product repository because the app packages the helper, consumes its versioned status contract, and verifies both in one release. The site has no runtime ownership and consumes only public release URLs, so it can deploy independently.
+The CLI/helper and desktop apps remain one product repository because the apps package or invoke the helper and consume its versioned status contract. The site has no runtime ownership and consumes only public release URLs, so it can deploy independently.
 
 ## Data Flow
 
@@ -16,10 +17,10 @@ The CLI/helper and Mac app remain one product repository because the app package
 local machine state
   -> portdeck-app discovery
   -> portdeck status --json
-  -> portdeck-mac rendering
+  -> portdeck-mac or portdeck-windows rendering
 ```
 
-The CLI is the boundary between machine inspection and UI. The Mac app can poll, cache, filter, and render the JSON, but discovery changes belong in `portdeck-app`.
+The CLI is the boundary between machine inspection and UI. Desktop apps can poll, cache, filter, and render the JSON, but discovery changes belong in `portdeck-app`.
 
 Public URLs and tunnels are exposure metadata on top of local runtime state. A public ngrok URL can point at a local listener, but it does not replace the listener as service identity. Raw local ports, processes, containers, and worktrees remain the diagnostic truth.
 
@@ -178,7 +179,7 @@ Website pagination uses 100 rows per page, requires stable `current_page`, `per_
 
 ## Control Boundary
 
-`portdeck-app` also owns focused service control actions that depend on discovered process or container identity. `portdeck-mac` must call those actions through the CLI instead of sending signals, stopping containers, or re-resolving owners in Swift.
+`portdeck-app` also owns focused service control actions that depend on discovered process or container identity. Desktop apps must call those actions through the CLI instead of sending signals, stopping containers, or re-resolving owners in UI code.
 
 The current control surface is `portdeck stop --service-id <id> --json`. The CLI refreshes the current status snapshot, finds the service by its status JSON `id`, and stops only safely identified process or Docker services.
 
