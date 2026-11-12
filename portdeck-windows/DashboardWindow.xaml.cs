@@ -17,7 +17,10 @@ public partial class DashboardWindow : Window
     private readonly DispatcherTimer _timer;
     private readonly WindowsSettings _settings;
     private readonly Action _saveSettings;
+    private readonly WindowsUpdateChecker _updateChecker = new();
     private bool _updatingSettingsControls;
+    private string? _buildCommit;
+    private Uri _latestSourceUri = new("https://github.com/Kaevyx/portdeck");
 
     internal bool AllowClose { get; set; }
 
@@ -210,11 +213,54 @@ public partial class DashboardWindow : Window
                       ?? "unknown";
         VersionText.Text = $"PortDeck for Windows {version}";
 
-        var commit = Environment.GetEnvironmentVariable("PORTDECK_BUILD_COMMIT");
-        BuildCommitText.Text = string.IsNullOrWhiteSpace(commit)
+        _buildCommit = Environment.GetEnvironmentVariable("PORTDECK_BUILD_COMMIT")?.Trim();
+        BuildCommitText.Text = string.IsNullOrWhiteSpace(_buildCommit)
             ? "Source commit unavailable. Use git fetch origin and git rev-parse HEAD to compare this checkout."
-            : $"Source commit {commit[..Math.Min(12, commit.Length)]}";
+            : $"Source commit {ShortCommit(_buildCommit)}";
     }
+
+    private async void CheckForUpdatesClick(object sender, RoutedEventArgs e)
+    {
+        CheckForUpdatesButton.IsEnabled = false;
+        CheckForUpdatesButton.Content = "Checking…";
+        UpdateStatusText.Foreground = (Media.Brush)FindResource("SecondaryText");
+        UpdateStatusText.Text = "Checking the latest source commit on GitHub…";
+
+        try
+        {
+            var result = await _updateChecker.CheckAsync(_buildCommit);
+            _latestSourceUri = result.LatestSourceUri;
+
+            switch (result.State)
+            {
+                case WindowsUpdateState.Current:
+                    UpdateStatusText.Foreground = (Media.Brush)FindResource("Healthy");
+                    UpdateStatusText.Text = $"Up to date — this build matches GitHub main ({ShortCommit(result.LatestCommit)}).";
+                    break;
+                case WindowsUpdateState.UpdateAvailable:
+                    UpdateStatusText.Foreground = (Media.Brush)FindResource("Warning");
+                    UpdateStatusText.Text = $"Update available — GitHub main is now {ShortCommit(result.LatestCommit)}. Pull and rebuild to update this preview.";
+                    break;
+                default:
+                    UpdateStatusText.Text = $"Latest source is {ShortCommit(result.LatestCommit)}, but this build has no source commit to compare.";
+                    break;
+            }
+        }
+        catch (Exception)
+        {
+            UpdateStatusText.Foreground = (Media.Brush)FindResource("Warning");
+            UpdateStatusText.Text = "Unable to check GitHub right now. Check your connection and try again.";
+        }
+        finally
+        {
+            CheckForUpdatesButton.Content = "Check for updates";
+            CheckForUpdatesButton.IsEnabled = true;
+        }
+    }
+
+    private void ViewLatestSourceClick(object sender, RoutedEventArgs e) => OpenShell(_latestSourceUri.AbsoluteUri);
+
+    private static string ShortCommit(string commit) => commit[..Math.Min(12, commit.Length)];
 
     private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
