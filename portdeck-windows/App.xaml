@@ -48,14 +48,14 @@
 
     <Style TargetType="TextBlock">
       <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI" />
-      <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />
+      <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
       <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
     </Style>
 
     <Style x:Key="ActionButton" TargetType="Button">
-      <Setter Property="Foreground" Value="{StaticResource PrimaryText}" />
-      <Setter Property="Background" Value="{StaticResource ActionBackground}" />
-      <Setter Property="BorderBrush" Value="{StaticResource HairlineBorder}" />
+      <Setter Property="Foreground" Value="{DynamicResource PrimaryText}" />
+      <Setter Property="Background" Value="{DynamicResource ActionBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource HairlineBorder}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="Padding" Value="11,6" />
       <Setter Property="Margin" Value="6,0,0,0" />
@@ -94,15 +94,15 @@
     </Style>
 
     <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
-      <Setter Property="Background" Value="{StaticResource Accent}" />
-      <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+      <Setter Property="Background" Value="{DynamicResource Accent}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
       <Setter Property="Foreground" Value="#0B0E14" />
     </Style>
 
     <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
-      <Setter Property="Foreground" Value="{StaticResource Danger}" />
-      <Setter Property="Background" Value="{StaticResource DangerActionBackground}" />
-      <Setter Property="BorderBrush" Value="{StaticResource DangerActionBorder}" />
+      <Setter Property="Foreground" Value="{DynamicResource Danger}" />
+      <Setter Property="Background" Value="{DynamicResource DangerActionBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource DangerActionBorder}" />
     </Style>
 
     <Style x:Key="HeaderButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
@@ -114,15 +114,15 @@
     </Style>
 
     <Style x:Key="ServiceCard" TargetType="Border">
-      <Setter Property="Background" Value="{StaticResource CardBackground}" />
-      <Setter Property="BorderBrush" Value="{StaticResource HairlineBorder}" />
+      <Setter Property="Background" Value="{DynamicResource CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource HairlineBorder}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="CornerRadius" Value="12" />
       <Setter Property="Padding" Value="14" />
       <Setter Property="Margin" Value="0,0,0,9" />
       <Style.Triggers>
         <Trigger Property="IsMouseOver" Value="True">
-          <Setter Property="Background" Value="{StaticResource CardHoverBackground}" />
+          <Setter Property="Background" Value="{DynamicResource CardHoverBackground}" />
           <Setter Property="BorderBrush" Value="#36435A" />
         </Trigger>
       </Style.Triggers>
@@ -136,15 +136,15 @@
         <Setter.Value>
           <ControlTemplate TargetType="ToggleButton">
             <Grid Width="42" Height="24">
-              <Border x:Name="Track" Background="{StaticResource ActionBackground}"
-                      BorderBrush="{StaticResource HairlineBorder}" BorderThickness="1" CornerRadius="12" />
-              <Ellipse x:Name="Knob" Width="18" Height="18" Fill="{StaticResource SecondaryText}"
+              <Border x:Name="Track" Background="{DynamicResource ActionBackground}"
+                      BorderBrush="{DynamicResource HairlineBorder}" BorderThickness="1" CornerRadius="12" />
+              <Ellipse x:Name="Knob" Width="18" Height="18" Fill="{DynamicResource SecondaryText}"
                        HorizontalAlignment="Left" Margin="3,0,0,0" />
             </Grid>
             <ControlTemplate.Triggers>
               <Trigger Property="IsChecked" Value="True">
-                <Setter TargetName="Track" Property="Background" Value="{StaticResource Accent}" />
-                <Setter TargetName="Track" Property="BorderBrush" Value="{StaticResource Accent}" />
+                <Setter TargetName="Track" Property="Background" Value="{DynamicResource Accent}" />
+                <Setter TargetName="Track" Property="BorderBrush" Value="{DynamicResource Accent}" />
                 <Setter TargetName="Knob" Property="Fill" Value="#FFFFFF" />
                 <Setter TargetName="Knob" Property="HorizontalAlignment" Value="Right" />
                 <Setter TargetName="Knob" Property="Margin" Value="0,0,3,0" />
@@ -164,13 +164,13 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="Thumb">
-            <Border x:Name="ThumbChrome" Background="{StaticResource ScrollThumb}" CornerRadius="3" />
+            <Border x:Name="ThumbChrome" Background="{DynamicResource ScrollThumb}" CornerRadius="3" />
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="ThumbChrome" Property="Background" Value="{StaticResource ScrollThumbHover}" />
+                <Setter TargetName="ThumbChrome" Property="Background" Value="{DynamicResource ScrollThumbHover}" />
               </Trigger>
               <Trigger Property="IsDragging" Value="True">
-                <Setter TargetName="ThumbChrome" Property="Background" Value="{StaticResource Accent}" />
+                <Setter TargetName="ThumbChrome" Property="Background" Value="{DynamicResource Accent}" />
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>

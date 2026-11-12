@@ -10,11 +10,11 @@
         ResizeMode="NoResize"
         AllowsTransparency="True"
         Background="Transparent"
-        Foreground="{StaticResource PrimaryText}"
+        Foreground="{DynamicResource PrimaryText}"
         PreviewKeyDown="WindowKeyDown">
   <Border Margin="14"
-          Background="{StaticResource WindowBackground}"
-          BorderBrush="{StaticResource HairlineBorder}"
+          Background="{DynamicResource WindowBackground}"
+          BorderBrush="{DynamicResource HairlineBorder}"
           BorderThickness="1"
           CornerRadius="18">
     <Border.Effect>
@@ -49,7 +49,7 @@
 
         <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
           <TextBlock Text="PortDeck" FontFamily="Segoe UI Variable Display, Segoe UI" FontSize="20" FontWeight="SemiBold" />
-          <TextBlock Text="LOCAL  /  WINDOWS" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource MutedText}"
+          <TextBlock Text="LOCAL  /  WINDOWS" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource MutedText}"
                      Margin="0,2,0,0" />
         </StackPanel>
 
@@ -67,7 +67,7 @@
 
       <!-- Local summary -->
       <Border Grid.Row="1" Margin="20,0,20,14" Padding="14,12"
-              Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+              Background="{DynamicResource SurfaceBackground}" BorderBrush="{DynamicResource HairlineBorder}"
               BorderThickness="1" CornerRadius="12">
         <Grid>
           <Grid.ColumnDefinitions>
@@ -76,18 +76,18 @@
           </Grid.ColumnDefinitions>
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <Grid Width="28" Height="28">
-              <Ellipse Fill="{StaticResource MetadataBackground}" />
-              <Ellipse Width="8" Height="8" Fill="{StaticResource Healthy}" />
+              <Ellipse Fill="{DynamicResource MetadataBackground}" />
+              <Ellipse Width="8" Height="8" Fill="{DynamicResource Healthy}" />
             </Grid>
             <StackPanel Margin="10,0,0,0">
               <TextBlock x:Name="ServiceCountText" Text="Discovering services…" FontSize="13" FontWeight="SemiBold" />
               <TextBlock x:Name="ProjectCountText" Text="Inspecting this Windows session" FontSize="11"
-                         Foreground="{StaticResource SecondaryText}" Margin="0,2,0,0" />
+                         Foreground="{DynamicResource SecondaryText}" Margin="0,2,0,0" />
             </StackPanel>
           </StackPanel>
-          <Border Grid.Column="1" Background="{StaticResource MetadataBackground}" BorderBrush="{StaticResource HairlineBorder}"
+          <Border Grid.Column="1" Background="{DynamicResource MetadataBackground}" BorderBrush="{DynamicResource HairlineBorder}"
                   BorderThickness="1" CornerRadius="8" Padding="10,5" VerticalAlignment="Center">
-            <TextBlock Text="READ + CONTROL" Foreground="{StaticResource AccentBright}" FontSize="9"
+            <TextBlock Text="READ + CONTROL" Foreground="{DynamicResource AccentBright}" FontSize="9"
                        FontWeight="SemiBold" />
           </Border>
         </Grid>
@@ -101,27 +101,27 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
-          <TextBlock x:Name="MessageGlyph" Text="!" Foreground="{StaticResource Warning}" FontSize="12"
+          <TextBlock x:Name="MessageGlyph" Text="!" Foreground="{DynamicResource Warning}" FontSize="12"
                      FontWeight="Bold" VerticalAlignment="Top" Margin="1,0,10,0" />
           <TextBlock Grid.Column="1" x:Name="MessageText" TextWrapping="Wrap" Foreground="#F4CE88" FontSize="11" />
         </Grid>
       </Border>
 
       <ProgressBar Grid.Row="3" x:Name="LoadingBar" IsIndeterminate="True" Height="3" BorderThickness="0"
-                   Foreground="{StaticResource Accent}" Background="Transparent" Visibility="Collapsed" />
+                   Foreground="{DynamicResource Accent}" Background="Transparent" Visibility="Collapsed" />
 
       <!-- Services -->
       <Grid Grid.Row="4" Margin="20,12,14,0">
         <Grid x:Name="EmptyState" Visibility="Collapsed">
           <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="300">
-            <Border Width="58" Height="58" CornerRadius="18" Background="{StaticResource SurfaceBackground}"
-                    BorderBrush="{StaticResource HairlineBorder}" BorderThickness="1" HorizontalAlignment="Center">
+            <Border Width="58" Height="58" CornerRadius="18" Background="{DynamicResource SurfaceBackground}"
+                    BorderBrush="{DynamicResource HairlineBorder}" BorderThickness="1" HorizontalAlignment="Center">
               <TextBlock Text="LOCAL" FontSize="10" FontWeight="SemiBold"
-                         Foreground="{StaticResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                         Foreground="{DynamicResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <TextBlock Text="No local services yet" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,14,0,0" />
             <TextBlock Text="Start a development server and it will appear here automatically."
-                       Foreground="{StaticResource SecondaryText}" FontSize="12" TextAlignment="Center"
+                       Foreground="{DynamicResource SecondaryText}" FontSize="12" TextAlignment="Center"
                        TextWrapping="Wrap" Margin="0,6,0,0" />
           </StackPanel>
         </Grid>
@@ -153,9 +153,9 @@
                           <ColumnDefinition Width="*" />
                           <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding ProjectLabel}" Foreground="{StaticResource AccentBright}" FontSize="9"
+                        <TextBlock Text="{Binding ProjectLabel}" Foreground="{DynamicResource AccentBright}" FontSize="9"
                                    FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                        <Border Grid.Column="1" Background="{StaticResource MetadataBackground}" CornerRadius="8" Padding="8,3">
+                        <Border Grid.Column="1" Background="{DynamicResource MetadataBackground}" CornerRadius="8" Padding="8,3">
                           <StackPanel Orientation="Horizontal">
                             <Ellipse Width="6" Height="6" Fill="{Binding StatusBrush}" VerticalAlignment="Center" />
                             <TextBlock Text="{Binding StatusLabel}" Foreground="{Binding StatusBrush}" FontSize="9"
@@ -169,19 +169,19 @@
 
                       <StackPanel Grid.Row="2" Margin="0,7,0,0">
                         <WrapPanel>
-                          <Border Background="{StaticResource MetadataBackground}" BorderBrush="{StaticResource HairlineBorder}" BorderThickness="1"
+                          <Border Background="{DynamicResource MetadataBackground}" BorderBrush="{DynamicResource HairlineBorder}" BorderThickness="1"
                                   CornerRadius="6" Padding="7,3" Margin="0,0,6,0">
                             <TextBlock Text="{Binding EndpointLabel}" FontFamily="Cascadia Mono, Consolas" FontSize="10"
-                                       Foreground="{StaticResource PrimaryText}" />
+                                       Foreground="{DynamicResource PrimaryText}" />
                           </Border>
-                          <Border Background="{StaticResource MetadataBackground}" BorderBrush="{StaticResource HairlineBorder}" BorderThickness="1"
+                          <Border Background="{DynamicResource MetadataBackground}" BorderBrush="{DynamicResource HairlineBorder}" BorderThickness="1"
                                   CornerRadius="6" Padding="7,3" Margin="0,0,6,0">
-                            <TextBlock Text="{Binding SourceLabel}" FontSize="10" Foreground="{StaticResource SecondaryText}" />
+                            <TextBlock Text="{Binding SourceLabel}" FontSize="10" Foreground="{DynamicResource SecondaryText}" />
                           </Border>
-                          <TextBlock Text="{Binding IdentityLabel}" FontSize="10" Foreground="{StaticResource MutedText}"
+                          <TextBlock Text="{Binding IdentityLabel}" FontSize="10" Foreground="{DynamicResource MutedText}"
                                      VerticalAlignment="Center" />
                         </WrapPanel>
-                        <TextBlock Text="{Binding LocationLabel}" FontSize="10" Foreground="{StaticResource MutedText}"
+                        <TextBlock Text="{Binding LocationLabel}" FontSize="10" Foreground="{DynamicResource MutedText}"
                                    TextTrimming="CharacterEllipsis" Margin="0,7,0,0" ToolTip="{Binding Folder}" />
                       </StackPanel>
 
@@ -190,7 +190,7 @@
                           <ColumnDefinition Width="*" />
                           <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding ContextLabel}" FontSize="10" Foreground="{StaticResource SecondaryText}"
+                        <TextBlock Text="{Binding ContextLabel}" FontSize="10" Foreground="{DynamicResource SecondaryText}"
                                    VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                           <Button Style="{StaticResource PrimaryButton}" Content="Open" IsEnabled="{Binding CanOpen}"
@@ -211,7 +211,7 @@
       </Grid>
 
       <!-- Footer -->
-      <Border Grid.Row="5" Margin="20,8,20,16" Padding="0,11,0,0" BorderBrush="{StaticResource HairlineBorder}"
+      <Border Grid.Row="5" Margin="20,8,20,16" Padding="0,11,0,0" BorderBrush="{DynamicResource HairlineBorder}"
               BorderThickness="0,1,0,0">
         <Grid>
           <Grid.ColumnDefinitions>
@@ -219,17 +219,17 @@
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
           <StackPanel Orientation="Horizontal">
-            <Ellipse x:Name="FooterStatusDot" Width="6" Height="6" Fill="{StaticResource Healthy}" VerticalAlignment="Center" />
-            <TextBlock x:Name="LastUpdatedText" Text="Waiting for first refresh" Foreground="{StaticResource SecondaryText}"
+            <Ellipse x:Name="FooterStatusDot" Width="6" Height="6" Fill="{DynamicResource Healthy}" VerticalAlignment="Center" />
+            <TextBlock x:Name="LastUpdatedText" Text="Waiting for first refresh" Foreground="{DynamicResource SecondaryText}"
                        FontSize="10" Margin="7,0,0,0" VerticalAlignment="Center" />
           </StackPanel>
-          <TextBlock Grid.Column="1" Text="Local data only" Foreground="{StaticResource MutedText}" FontSize="10" />
+          <TextBlock Grid.Column="1" Text="Local data only" Foreground="{DynamicResource MutedText}" FontSize="10" />
         </Grid>
       </Border>
 
       <!-- Embedded settings keeps the flyout attached to the taskbar. -->
       <Border Grid.RowSpan="6" Panel.ZIndex="20" x:Name="SettingsPanel" Visibility="Collapsed"
-              Background="{StaticResource WindowBackground}" CornerRadius="18">
+              Background="{DynamicResource WindowBackground}" CornerRadius="18">
         <Grid Margin="20,18,20,18">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -247,18 +247,18 @@
                     ToolTip="Back to services" AutomationProperties.Name="Back to services" />
             <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
               <TextBlock Text="Settings" FontFamily="Segoe UI Variable Display, Segoe UI" FontSize="20" FontWeight="SemiBold" />
-              <TextBlock Text="WINDOWS FLYOUT" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource MutedText}" Margin="0,2,0,0" />
+              <TextBlock Text="WINDOWS FLYOUT" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource MutedText}" Margin="0,2,0,0" />
             </StackPanel>
-            <Border Grid.Column="2" Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+            <Border Grid.Column="2" Background="{DynamicResource SurfaceBackground}" BorderBrush="{DynamicResource HairlineBorder}"
                     BorderThickness="1" CornerRadius="8" Padding="9,5" VerticalAlignment="Center">
-              <TextBlock Text="SAVED LOCALLY" FontSize="9" Foreground="{StaticResource SecondaryText}" FontWeight="SemiBold" />
+              <TextBlock Text="SAVED LOCALLY" FontSize="9" Foreground="{DynamicResource SecondaryText}" FontWeight="SemiBold" />
             </Border>
           </Grid>
 
           <StackPanel Grid.Row="1" Margin="0,28,0,0">
             <TextBlock Text="Appearance" FontSize="13" FontWeight="SemiBold" />
             <TextBlock Text="Dark is the default. System follows the Windows app theme when PortDeck starts."
-                       Foreground="{StaticResource SecondaryText}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,12" />
+                       Foreground="{DynamicResource SecondaryText}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,12" />
             <UniformGrid Columns="3" Height="44">
               <Button x:Name="DarkThemeButton" Style="{StaticResource ActionButton}" Margin="0,0,6,0"
                       Content="Dark" Click="DarkThemeClick" Tag="Dark" />
@@ -268,10 +268,10 @@
                       Content="System" Click="SystemThemeClick" Tag="System" />
             </UniformGrid>
 
-            <Border Height="1" Background="{StaticResource HairlineBorder}" Margin="0,26,0,22" />
+            <Border Height="1" Background="{DynamicResource HairlineBorder}" Margin="0,26,0,22" />
 
             <TextBlock Text="Flyout behavior" FontSize="13" FontWeight="SemiBold" />
-            <Border Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+            <Border Background="{DynamicResource SurfaceBackground}" BorderBrush="{DynamicResource HairlineBorder}"
                     BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,12,0,0">
               <Grid>
                 <Grid.ColumnDefinitions>
@@ -281,14 +281,14 @@
                 <StackPanel>
                   <TextBlock Text="Keep flyout open" FontSize="12" FontWeight="SemiBold" />
                   <TextBlock Text="When off, PortDeck tucks back into the taskbar when it loses focus."
-                             Foreground="{StaticResource SecondaryText}" FontSize="10" TextWrapping="Wrap" Margin="0,4,18,0" />
+                             Foreground="{DynamicResource SecondaryText}" FontSize="10" TextWrapping="Wrap" Margin="0,4,18,0" />
                 </StackPanel>
                 <ToggleButton Grid.Column="1" x:Name="KeepOpenToggle" Style="{StaticResource ToggleSwitch}"
                               VerticalAlignment="Center" Checked="KeepOpenToggleChanged" Unchecked="KeepOpenToggleChanged" />
               </Grid>
             </Border>
 
-            <Border Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+            <Border Background="{DynamicResource SurfaceBackground}" BorderBrush="{DynamicResource HairlineBorder}"
                     BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,10,0,0">
               <Grid>
                 <Grid.ColumnDefinitions>
@@ -298,29 +298,29 @@
                 <StackPanel>
                   <TextBlock Text="Taskbar attached" FontSize="12" FontWeight="SemiBold" />
                   <TextBlock Text="The flyout follows the taskbar edge on the monitor where it is opened."
-                             Foreground="{StaticResource SecondaryText}" FontSize="10" TextWrapping="Wrap" Margin="0,4,18,0" />
+                             Foreground="{DynamicResource SecondaryText}" FontSize="10" TextWrapping="Wrap" Margin="0,4,18,0" />
                 </StackPanel>
-                <TextBlock Grid.Column="1" Text="ON" Foreground="{StaticResource Healthy}" FontSize="10"
+                <TextBlock Grid.Column="1" Text="ON" Foreground="{DynamicResource Healthy}" FontSize="10"
                            FontWeight="SemiBold" VerticalAlignment="Center" />
               </Grid>
             </Border>
 
-            <Border Height="1" Background="{StaticResource HairlineBorder}" Margin="0,24,0,20" />
+            <Border Height="1" Background="{DynamicResource HairlineBorder}" Margin="0,24,0,20" />
 
             <TextBlock Text="About this build" FontSize="13" FontWeight="SemiBold" />
-            <Border Background="{StaticResource SurfaceBackground}" BorderBrush="{StaticResource HairlineBorder}"
+            <Border Background="{DynamicResource SurfaceBackground}" BorderBrush="{DynamicResource HairlineBorder}"
                     BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,12,0,0">
               <StackPanel>
                 <TextBlock x:Name="VersionText" FontSize="12" FontWeight="SemiBold" />
-                <TextBlock x:Name="BuildCommitText" Foreground="{StaticResource SecondaryText}" FontSize="10"
+                <TextBlock x:Name="BuildCommitText" Foreground="{DynamicResource SecondaryText}" FontSize="10"
                            TextWrapping="Wrap" Margin="0,4,0,0" />
               </StackPanel>
             </Border>
           </StackPanel>
 
-          <Border Grid.Row="2" Padding="0,12,0,0" BorderBrush="{StaticResource HairlineBorder}" BorderThickness="0,1,0,0">
+          <Border Grid.Row="2" Padding="0,12,0,0" BorderBrush="{DynamicResource HairlineBorder}" BorderThickness="0,1,0,0">
             <TextBlock Text="Preferences are stored in your local PortDeck application data."
-                       FontSize="10" Foreground="{StaticResource MutedText}" />
+                       FontSize="10" Foreground="{DynamicResource MutedText}" />
           </Border>
         </Grid>
       </Border>
