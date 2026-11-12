@@ -8,12 +8,17 @@ namespace PortDeck.Windows;
 internal sealed record WindowsUpdateCheckResult(
     string LatestCommit,
     Uri LatestSourceUri,
-    WindowsUpdateState State);
+    WindowsUpdateState State,
+    int MainAheadBy = 0,
+    int LocalAheadBy = 0);
 
 internal enum WindowsUpdateState
 {
     Current,
     UpdateAvailable,
+    LocalAhead,
+    Diverged,
+    Different,
     ComparisonUnavailable,
 }
 
@@ -64,9 +69,47 @@ internal sealed class WindowsUpdateChecker
             ? WindowsUpdateState.ComparisonUnavailable
             : CommitsMatch(localCommit, latestCommit)
                 ? WindowsUpdateState.Current
-                : WindowsUpdateState.UpdateAvailable;
+                : WindowsUpdateState.Different;
 
-        return new WindowsUpdateCheckResult(latestCommit, latestSourceUri, state);
+        if (state != WindowsUpdateState.Different || !LooksLikeCommit(localCommit!))
+        {
+            return new WindowsUpdateCheckResult(latestCommit, latestSourceUri, state);
+        }
+
+        var comparisonUri = new Uri(
+            $"https://api.github.com/repos/Kaevyx/portdeck/compare/{Uri.EscapeDataString(localCommit!.Trim())}...main");
+        using var comparisonResponse = await _httpClient.GetAsync(comparisonUri, cancellationToken);
+        if (!comparisonResponse.IsSuccessStatusCode)
+        {
+            return new WindowsUpdateCheckResult(latestCommit, latestSourceUri, WindowsUpdateState.Different);
+        }
+
+        await using var comparisonStream = await comparisonResponse.Content.ReadAsStreamAsync(cancellationToken);
+        using var comparisonDocument = await JsonDocument.ParseAsync(
+            comparisonStream,
+            cancellationToken: cancellationToken);
+        var comparisonRoot = comparisonDocument.RootElement;
+        var comparisonStatus = comparisonRoot.TryGetProperty("status", out var statusElement)
+            ? statusElement.GetString()
+            : null;
+        var mainAheadBy = ReadCount(comparisonRoot, "ahead_by");
+        var localAheadBy = ReadCount(comparisonRoot, "behind_by");
+
+        state = comparisonStatus switch
+        {
+            "identical" => WindowsUpdateState.Current,
+            "ahead" => WindowsUpdateState.UpdateAvailable,
+            "behind" => WindowsUpdateState.LocalAhead,
+            "diverged" => WindowsUpdateState.Diverged,
+            _ => WindowsUpdateState.Different,
+        };
+
+        return new WindowsUpdateCheckResult(
+            latestCommit,
+            latestSourceUri,
+            state,
+            mainAheadBy,
+            localAheadBy);
     }
 
     private static bool CommitsMatch(string localCommit, string latestCommit)
@@ -77,4 +120,15 @@ internal sealed class WindowsUpdateChecker
                || local.StartsWith(latest, StringComparison.OrdinalIgnoreCase)
                || latest.StartsWith(local, StringComparison.OrdinalIgnoreCase);
     }
+
+    private static bool LooksLikeCommit(string commit)
+    {
+        var value = commit.Trim();
+        return value.Length is >= 7 and <= 40 && value.All(Uri.IsHexDigit);
+    }
+
+    private static int ReadCount(JsonElement root, string propertyName) =>
+        root.TryGetProperty(propertyName, out var element) && element.TryGetInt32(out var value)
+            ? value
+            : 0;
 }

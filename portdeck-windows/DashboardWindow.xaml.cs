@@ -19,6 +19,8 @@ public partial class DashboardWindow : Window
     private readonly Action _saveSettings;
     private readonly WindowsUpdateChecker _updateChecker = new();
     private bool _updatingSettingsControls;
+    private bool _hasCheckedForUpdates;
+    private bool _updateCheckInProgress;
     private string? _buildCommit;
     private Uri _latestSourceUri = new("https://github.com/Kaevyx/portdeck");
 
@@ -149,6 +151,7 @@ public partial class DashboardWindow : Window
     {
         UpdateSettingsControls();
         SettingsPanel.Visibility = Visibility.Visible;
+        if (!_hasCheckedForUpdates) _ = CheckForUpdatesAsync();
     }
 
     private void CloseSettingsClick(object sender, RoutedEventArgs e) => SettingsPanel.Visibility = Visibility.Collapsed;
@@ -219,12 +222,18 @@ public partial class DashboardWindow : Window
             : $"Source commit {ShortCommit(_buildCommit)}";
     }
 
-    private async void CheckForUpdatesClick(object sender, RoutedEventArgs e)
+    private async void CheckForUpdatesClick(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync();
+
+    private async Task CheckForUpdatesAsync()
     {
+        if (_updateCheckInProgress) return;
+        _updateCheckInProgress = true;
         CheckForUpdatesButton.IsEnabled = false;
         CheckForUpdatesButton.Content = "Checking…";
-        UpdateStatusText.Foreground = (Media.Brush)FindResource("SecondaryText");
+        UpdateStatusHeadline.Foreground = (Media.Brush)FindResource("PrimaryText");
+        UpdateStatusHeadline.Text = "Checking GitHub";
         UpdateStatusText.Text = "Checking the latest source commit on GitHub…";
+        UpdateCheckedText.Text = "";
 
         try
         {
@@ -234,29 +243,69 @@ public partial class DashboardWindow : Window
             switch (result.State)
             {
                 case WindowsUpdateState.Current:
-                    UpdateStatusText.Foreground = (Media.Brush)FindResource("Healthy");
-                    UpdateStatusText.Text = $"Up to date — this build matches GitHub main ({ShortCommit(result.LatestCommit)}).";
+                    SetUpdateStatus(
+                        "Up to date",
+                        $"This build matches GitHub main ({ShortCommit(result.LatestCommit)}).",
+                        "Healthy");
                     break;
                 case WindowsUpdateState.UpdateAvailable:
-                    UpdateStatusText.Foreground = (Media.Brush)FindResource("Warning");
-                    UpdateStatusText.Text = $"Update available — GitHub main is now {ShortCommit(result.LatestCommit)}. Pull and rebuild to update this preview.";
+                    SetUpdateStatus(
+                        "Update available",
+                        $"GitHub main is {FormatCommitCount(result.MainAheadBy)} ahead. Pull and rebuild to update this preview.",
+                        "Warning");
+                    break;
+                case WindowsUpdateState.LocalAhead:
+                    SetUpdateStatus(
+                        "Local build is ahead",
+                        $"This build is {FormatCommitCount(result.LocalAheadBy)} ahead of GitHub main. Nothing needs downloading.",
+                        "AccentBright");
+                    break;
+                case WindowsUpdateState.Diverged:
+                    SetUpdateStatus(
+                        "Source has diverged",
+                        $"GitHub main is {FormatCommitCount(result.MainAheadBy)} ahead and this build has {FormatCommitCount(result.LocalAheadBy)} not on main.",
+                        "Warning");
+                    break;
+                case WindowsUpdateState.Different:
+                    SetUpdateStatus(
+                        "Different source build",
+                        $"GitHub main is {ShortCommit(result.LatestCommit)}, but its relationship to this build could not be confirmed.",
+                        "Warning");
                     break;
                 default:
-                    UpdateStatusText.Text = $"Latest source is {ShortCommit(result.LatestCommit)}, but this build has no source commit to compare.";
+                    SetUpdateStatus(
+                        "Comparison unavailable",
+                        $"Latest source is {ShortCommit(result.LatestCommit)}, but this build has no source commit to compare.",
+                        "SecondaryText");
                     break;
             }
         }
         catch (Exception)
         {
-            UpdateStatusText.Foreground = (Media.Brush)FindResource("Warning");
-            UpdateStatusText.Text = "Unable to check GitHub right now. Check your connection and try again.";
+            SetUpdateStatus(
+                "Unable to check",
+                "GitHub could not be reached. Check your connection and try again.",
+                "Warning");
         }
         finally
         {
+            _hasCheckedForUpdates = true;
+            _updateCheckInProgress = false;
             CheckForUpdatesButton.Content = "Check for updates";
             CheckForUpdatesButton.IsEnabled = true;
+            UpdateCheckedText.Text = $"Checked {DateTime.Now:t}";
         }
     }
+
+    private void SetUpdateStatus(string headline, string detail, string colorResource)
+    {
+        UpdateStatusHeadline.Text = headline;
+        UpdateStatusHeadline.Foreground = (Media.Brush)FindResource(colorResource);
+        UpdateStatusText.Text = detail;
+    }
+
+    private static string FormatCommitCount(int count) =>
+        count == 1 ? "1 commit" : $"{Math.Max(count, 0)} commits";
 
     private void ViewLatestSourceClick(object sender, RoutedEventArgs e) => OpenShell(_latestSourceUri.AbsoluteUri);
 

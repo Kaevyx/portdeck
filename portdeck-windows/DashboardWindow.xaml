@@ -315,10 +315,18 @@
                 <TextBlock x:Name="BuildCommitText" Foreground="{DynamicResource SecondaryText}" FontSize="10"
                            TextWrapping="Wrap" Margin="0,4,0,0" />
                 <Border Height="1" Background="{DynamicResource HairlineBorder}" Margin="0,12,0,10" />
-                <TextBlock x:Name="UpdateStatusText"
-                           Text="Check GitHub main to see whether this source build is current."
-                           Foreground="{DynamicResource SecondaryText}" FontSize="10"
-                           TextWrapping="Wrap" />
+                <Border Background="{DynamicResource MetadataBackground}" CornerRadius="8" Padding="10,8">
+                  <StackPanel>
+                    <TextBlock x:Name="UpdateStatusHeadline" Text="Update status"
+                               FontSize="10" FontWeight="SemiBold" />
+                    <TextBlock x:Name="UpdateStatusText"
+                               Text="Settings checks GitHub main once per session, or you can check manually."
+                               Foreground="{DynamicResource SecondaryText}" FontSize="10"
+                               TextWrapping="Wrap" Margin="0,3,0,0" />
+                    <TextBlock x:Name="UpdateCheckedText" Foreground="{DynamicResource MutedText}"
+                               FontSize="9" Margin="0,4,0,0" />
+                  </StackPanel>
+                </Border>
                 <Grid Margin="0,12,0,0">
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

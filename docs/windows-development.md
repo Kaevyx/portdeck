@@ -38,7 +38,7 @@ The dashboard behaves as a taskbar flyout:
 - The clearly labelled **Settings** button provides Dark, Light, and System themes. Dark is the default; System reads the Windows app theme at startup and when Windows preferences change.
 - Theme changes apply immediately across the entire flyout; restarting PortDeck is not required.
 - Settings shows the Windows preview version and the source commit used by the development launcher.
-- **Check for updates** compares that source commit with the latest commit on GitHub `main`. It is a read-only source-preview check: it does not download or install an update. When newer source is available, pull the repository and rebuild the app locally.
+- Settings checks for source updates once per session and also provides a manual retry. It compares the build commit with GitHub `main`, distinguishing current, behind, ahead, and diverged source. This is a read-only source-preview check: it does not download or install an update. When newer source is available, pull the repository and rebuild the app locally.
 - Preferences are stored at `%LOCALAPPDATA%\PortDeck\windows-settings.json` and contain no project or provider data.
 
 On enterprise-managed Windows devices, Application Control may require the development executable to be signed by an organization-approved certificate. PortDeck does not bypass that policy; use an approved development-signing workflow, request an administrator-managed allow rule for PortDeck development builds, or test on a device that permits locally built applications. The launcher detects a matching Code Integrity event and reports these options explicitly.
@@ -79,4 +79,4 @@ Manual UI checks should cover:
 6. Missing Docker, inaccessible process metadata, and discovery warnings do not crash the app.
 7. The header cannot drag the flyout away from its taskbar edge, and every header control has a readable text label.
 8. Settings switches between Dark, Light, and System and displays the current preview version and source commit.
-9. Check for updates reports current, newer-source, missing-build-commit, and offline states without changing the checkout.
+9. Check for updates reports current, behind, ahead, diverged, missing-build-commit, and offline states without changing the checkout.
