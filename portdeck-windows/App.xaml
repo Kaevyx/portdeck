@@ -1,6 +1,7 @@
 <Application x:Class="PortDeck.Windows.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
              ShutdownMode="OnExplicitShutdown">
   <Application.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
@@ -19,25 +20,26 @@
     <Color x:Key="WarningColor">#F5BE62</Color>
     <Color x:Key="DangerColor">#FF7D8A</Color>
 
-    <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowColor}" />
-    <SolidColorBrush x:Key="SurfaceBackground" Color="{StaticResource SurfaceColor}" />
-    <SolidColorBrush x:Key="CardBackground" Color="{StaticResource RaisedSurfaceColor}" />
-    <SolidColorBrush x:Key="CardHoverBackground" Color="{StaticResource HoverSurfaceColor}" />
-    <SolidColorBrush x:Key="HairlineBorder" Color="{StaticResource BorderColor}" />
-    <SolidColorBrush x:Key="PrimaryText" Color="{StaticResource PrimaryTextColor}" />
-    <SolidColorBrush x:Key="SecondaryText" Color="{StaticResource SecondaryTextColor}" />
-    <SolidColorBrush x:Key="MutedText" Color="{StaticResource MutedTextColor}" />
-    <SolidColorBrush x:Key="Accent" Color="{StaticResource AccentColor}" />
-    <SolidColorBrush x:Key="AccentBright" Color="{StaticResource AccentBrightColor}" />
-    <SolidColorBrush x:Key="Healthy" Color="{StaticResource HealthyColor}" />
-    <SolidColorBrush x:Key="Warning" Color="{StaticResource WarningColor}" />
-    <SolidColorBrush x:Key="Danger" Color="{StaticResource DangerColor}" />
-    <SolidColorBrush x:Key="ActionBackground" Color="#202838" />
-    <SolidColorBrush x:Key="MetadataBackground" Color="#10151F" />
-    <SolidColorBrush x:Key="ScrollThumb" Color="#45536A" />
-    <SolidColorBrush x:Key="ScrollThumbHover" Color="#63728C" />
-    <SolidColorBrush x:Key="DangerActionBackground" Color="#271B24" />
-    <SolidColorBrush x:Key="DangerActionBorder" Color="#4A2934" />
+    <!-- These shared brushes must stay mutable so an in-place theme change reaches every StaticResource consumer. -->
+    <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="SurfaceBackground" Color="{StaticResource SurfaceColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="CardBackground" Color="{StaticResource RaisedSurfaceColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="CardHoverBackground" Color="{StaticResource HoverSurfaceColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="HairlineBorder" Color="{StaticResource BorderColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="PrimaryText" Color="{StaticResource PrimaryTextColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="SecondaryText" Color="{StaticResource SecondaryTextColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="MutedText" Color="{StaticResource MutedTextColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="Accent" Color="{StaticResource AccentColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="AccentBright" Color="{StaticResource AccentBrightColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="Healthy" Color="{StaticResource HealthyColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="Warning" Color="{StaticResource WarningColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="Danger" Color="{StaticResource DangerColor}" options:Freeze="False" />
+    <SolidColorBrush x:Key="ActionBackground" Color="#202838" options:Freeze="False" />
+    <SolidColorBrush x:Key="MetadataBackground" Color="#10151F" options:Freeze="False" />
+    <SolidColorBrush x:Key="ScrollThumb" Color="#45536A" options:Freeze="False" />
+    <SolidColorBrush x:Key="ScrollThumbHover" Color="#63728C" options:Freeze="False" />
+    <SolidColorBrush x:Key="DangerActionBackground" Color="#271B24" options:Freeze="False" />
+    <SolidColorBrush x:Key="DangerActionBorder" Color="#4A2934" options:Freeze="False" />
 
     <LinearGradientBrush x:Key="BrandGradient" StartPoint="0,0" EndPoint="1,1">
       <GradientStop Color="#A8AFFF" Offset="0" />

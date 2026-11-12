@@ -9,6 +9,6 @@
     <AssemblyName>PortDeck</AssemblyName>
     <RootNamespace>PortDeck.Windows</RootNamespace>
     <Version>0.2.0</Version>
-    <InformationalVersion>0.2.0-windows-preview.2</InformationalVersion>
+    <InformationalVersion>0.2.0-windows-preview.3</InformationalVersion>
   </PropertyGroup>
 </Project>

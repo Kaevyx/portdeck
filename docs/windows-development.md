@@ -36,6 +36,7 @@ The dashboard behaves as a taskbar flyout:
 - It tucks back into the tray when it loses focus unless **Keep flyout open** is enabled.
 - The header pin toggles that behavior without opening Settings.
 - The clearly labelled **Settings** button provides Dark, Light, and System themes. Dark is the default; System reads the Windows app theme at startup and when Windows preferences change.
+- Theme changes apply immediately across the entire flyout; restarting PortDeck is not required.
 - Settings shows the Windows preview version and the source commit used by the development launcher.
 - Preferences are stored at `%LOCALAPPDATA%\PortDeck\windows-settings.json` and contain no project or provider data.
 
