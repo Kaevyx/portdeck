@@ -14,7 +14,9 @@ try {
   if ($LASTEXITCODE -ne 0) { throw "Could not build the PortDeck helper." }
 
   $previousRoot = $env:PORTDECK_REPO_ROOT
+  $previousBuildCommit = $env:PORTDECK_BUILD_COMMIT
   $env:PORTDECK_REPO_ROOT = $repositoryRoot
+  $env:PORTDECK_BUILD_COMMIT = (& git -C $repositoryRoot rev-parse HEAD 2>$null)
   try {
     $launchStartedAt = Get-Date
     $previousErrorActionPreference = $ErrorActionPreference
@@ -56,6 +58,7 @@ Ask your device administrator which signing identity and workflow are approved f
     }
   } finally {
     $env:PORTDECK_REPO_ROOT = $previousRoot
+    $env:PORTDECK_BUILD_COMMIT = $previousBuildCommit
   }
 } finally {
   Pop-Location

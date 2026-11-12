@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -27,6 +28,7 @@ public partial class DashboardWindow : Window
         InitializeComponent();
         _client = client;
         ServiceList.ItemsSource = _rows;
+        UpdateBuildInformation();
         UpdateSettingsControls();
         Deactivated += (_, _) =>
         {
@@ -184,6 +186,7 @@ public partial class DashboardWindow : Window
             SetThemeButtonState(SystemThemeButton, _settings.Theme == PortDeckTheme.System);
             PinButton.Foreground = (Media.Brush)FindResource(_settings.KeepFlyoutOpen ? "AccentBright" : "PrimaryText");
             PinButton.BorderBrush = (Media.Brush)FindResource(_settings.KeepFlyoutOpen ? "Accent" : "HairlineBorder");
+            PinButton.Content = _settings.KeepFlyoutOpen ? "Pinned" : "Pin";
             PinButton.ToolTip = _settings.KeepFlyoutOpen ? "Unpin flyout" : "Keep flyout open";
         }
         finally
@@ -199,9 +202,18 @@ public partial class DashboardWindow : Window
         button.Background = (Media.Brush)FindResource(selected ? "ActionBackground" : "SurfaceBackground");
     }
 
-    private void HeaderMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void UpdateBuildInformation()
     {
-        if (e.ButtonState == MouseButtonState.Pressed) DragMove();
+        var assembly = Assembly.GetExecutingAssembly();
+        var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                      ?? assembly.GetName().Version?.ToString()
+                      ?? "unknown";
+        VersionText.Text = $"PortDeck for Windows {version}";
+
+        var commit = Environment.GetEnvironmentVariable("PORTDECK_BUILD_COMMIT");
+        BuildCommitText.Text = string.IsNullOrWhiteSpace(commit)
+            ? "Source commit unavailable. Use git fetch origin and git rev-parse HEAD to compare this checkout."
+            : $"Source commit {commit[..Math.Min(12, commit.Length)]}";
     }
 
     private void WindowKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

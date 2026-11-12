@@ -32,9 +32,11 @@ The launcher builds the TypeScript helper, starts the WPF tray application, and 
 The dashboard behaves as a taskbar flyout:
 
 - It anchors to the taskbar edge on the monitor where it is opened and repositions after display or taskbar changes.
+- It cannot be dragged away from the taskbar edge.
 - It tucks back into the tray when it loses focus unless **Keep flyout open** is enabled.
 - The header pin toggles that behavior without opening Settings.
-- Settings provides Dark, Light, and System themes. Dark is the default; System reads the Windows app theme at startup and when Windows preferences change.
+- The clearly labelled **Settings** button provides Dark, Light, and System themes. Dark is the default; System reads the Windows app theme at startup and when Windows preferences change.
+- Settings shows the Windows preview version and the source commit used by the development launcher.
 - Preferences are stored at `%LOCALAPPDATA%\PortDeck\windows-settings.json` and contain no project or provider data.
 
 On enterprise-managed Windows devices, Application Control may require the development executable to be signed by an organization-approved certificate. PortDeck does not bypass that policy; use an approved development-signing workflow, request an administrator-managed allow rule for PortDeck development builds, or test on a device that permits locally built applications. The launcher detects a matching Code Integrity event and reports these options explicitly.
@@ -73,3 +75,5 @@ Manual UI checks should cover:
 4. Folder opens only when safe path attribution exists.
 5. Stop requires confirmation and refreshes the snapshot afterward.
 6. Missing Docker, inaccessible process metadata, and discovery warnings do not crash the app.
+7. The header cannot drag the flyout away from its taskbar edge, and every header control has a readable text label.
+8. Settings switches between Dark, Light, and System and displays the current preview version and source commit.
